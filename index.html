@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản Lý Tài Chính 6 Hũ</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            background-color: #f4f7f6;
+            padding: 20px;
+            color: #333;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        .header {
+            background: #2c3e50;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        /* Navigation Tabs */
+        .tabs {
+            display: flex;
+            flex-wrap: wrap;
+            background: #ecf0f1;
+            border-bottom: 2px solid #bdc3c7;
+        }
+        .tab-button {
+            flex: 1;
+            min-width: 100px;
+            padding: 12px 10px;
+            border: none;
+            background: inherit;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            color: #7f8c8d;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+        .tab-button:hover {
+            background: #e2e8f0;
+            color: #2c3e50;
+        }
+        .tab-button.active {
+            background: #fff;
+            color: #2980b9;
+            border-bottom: 3px solid #2980b9;
+        }
+        /* Tab Content */
+        .tab-content {
+            display: none;
+            padding: 25px;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        /* Form Inputs */
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 600;
+        }
+        input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 16px;
+        }
+        button.btn-submit {
+            background: #27ae60;
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            width: 100%;
+            margin-top: 10px;
+        }
+        button.btn-submit:hover {
+            background: #219150;
+        }
+        /* Cards in Category Tabs */
+        .card {
+            background: #f8f9fa;
+            border-left: 5px solid #2980b9;
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 15px;
+        }
+        .amount-display {
+            font-size: 24px;
+            font-weight: bold;
+            color: #27ae60;
+            margin-top: 5px;
+        }
+        .desc {
+            color: #666;
+            margin-top: 8px;
+            line-height: 1.5;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <h2>Quản Lý Tài Chính 6 Hũ</h2>
+    </div>
+
+    <!-- Thanh chuyển Tab -->
+    <div class="tabs">
+        <button class="tab-button active" onclick="openTab(event, 'tab1')">Nhập Số Tiền</button>
+        <button class="tab-button" onclick="openTab(event, 'tab2')">Thiết Yếu (55%)</button>
+        <button class="tab-button" onclick="openTab(event, 'tab3')">Tiết Kiệm (10%)</button>
+        <button class="tab-button" onclick="openTab(event, 'tab4')">Giáo Dục (10%)</button>
+        <button class="tab-button" onclick="openTab(event, 'tab5')">Hưởng Thụ (10%)</button>
+        <button class="tab-button" onclick="openTab(event, 'tab6')">Tự Do TC (10%)</button>
+        <button class="tab-button" onclick="openTab(event, 'tab7')">Từ Thiện (5%)</button>
+    </div>
+
+    <!-- Tab 1: Nhập tiền và ngày tháng -->
+    <div id="tab1" class="tab-content active">
+        <h3>Nhập Thông Tin Thu Nhập</h3>
+        <form id="moneyForm" onsubmit="calculateAllocation(event)" style="margin-top: 15px;">
+            <div class="form-group">
+                <label for="dateInput">Ngày tháng năm:</label>
+                <input type="date" id="dateInput" required>
+            </div>
+            <div class="form-group">
+                <label for="amountInput">Số tiền thu nhập (VNĐ):</label>
+                <input type="number" id="amountInput" placeholder="Ví dụ: 10000000" min="0" required>
+            </div>
+            <button type="submit" class="btn-submit">Lưu & Phân Phối</button>
+        </form>
+    </div>
+
+    <!-- Tab 2: Nhu cầu thiết yếu -->
+    <div id="tab2" class="tab-content">
+        <h3>Quỹ Nhu Cầu Thiết Yếu (55%)</h3>
+        <div class="card">
+            <div>Số tiền khả dụng:</div>
+            <div class="amount-display" id="val-55">0 VNĐ</div>
+            <div class="desc">Dùng cho ăn uống, sinh hoạt, tiền nhà, hóa đơn điện nước, đi lại...</div>
+        </div>
+    </div>
+
+    <!-- Tab 3: Tiết kiệm dài hạn -->
+    <div id="tab3" class="tab-content">
+        <h3>Quỹ Tiết Kiệm Dài Hạn (10%)</h3>
+        <div class="card">
+            <div>Số tiền khả dụng:</div>
+            <div class="amount-display" id="val-10-1">0 VNĐ</div>
+            <div class="desc">Dùng cho mục tiêu dài hạn (mua xe, mua nhà, quỹ dự phòng khẩn cấp...).</div>
+        </div>
+    </div>
+
+    <!-- Tab 4: Giáo dục -->
+    <div id="tab4" class="tab-content">
+        <h3>Quỹ Phát Triển Bản Thân (10%)</h3>
+        <div class="card">
+            <div>Số tiền khả dụng:</div>
+            <div class="amount-display" id="val-10-2">0 VNĐ</div>
+            <div class="desc">Dùng để mua sách, học thêm khóa học, nâng cao kỹ năng bản thân.</div>
+        </div>
+    </div>
+
+    <!-- Tab 5: Hưởng thụ -->
+    <div id="tab5" class="tab-content">
+        <h3>Quỹ Hưởng Thụ (10%)</h3>
+        <div class="card">
+            <div>Số tiền khả dụng:</div>
+            <div class="amount-display" id="val-10-3">0 VNĐ</div>
+            <div class="desc">Dùng để cà phê, du lịch, mua sắm sở thích cá nhân, thư giãn.</div>
+        </div>
+    </div>
+
+    <!-- Tab 6: Tự do tài chính -->
+    <div id="tab6" class="tab-content">
+        <h3>Quỹ Tự Do Tài Chính (10%)</h3>
+        <div class="card">
+            <div>Số tiền khả dụng:</div>
+            <div class="amount-display" id="val-10-4">0 VNĐ</div>
+            <div class="desc">Dùng để đầu tư, gửi tiết kiệm, mua vàng... "Con gà đẻ trứng vàng - Không được giết!".</div>
+        </div>
+    </div>
+
+    <!-- Tab 7: Cho đi / Từ thiện -->
+    <div id="tab7" class="tab-content">
+        <h3>Quỹ Cho Đi / Từ Thiện (5%)</h3>
+        <div class="card">
+            <div>Số tiền khả dụng:</div>
+            <div class="amount-display" id="val-5">0 VNĐ</div>
+            <div class="desc">Dùng làm từ thiện, báo hiếu cha mẹ, giúp đỡ bạn bè, người thân.</div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Tự động gán ngày hiện tại vào ô input date khi tải trang
+    document.addEventListener('DOMContentLoaded', () => {
+        const today = new Date().toISOString().split('T')[0];
+        document.getElementById('dateInput').value = today;
+
+        // Tải dữ liệu cũ nếu đã lưu
+        const savedAmount = localStorage.getItem('totalAmount');
+        if (savedAmount) {
+            document.getElementById('amountInput').value = savedAmount;
+            updateValues(parseFloat(savedAmount));
+        }
+    });
+
+    // Chức năng chuyển Tab
+    function openTab(evt, tabName) {
+        const tabContents = document.getElementsByClassName("tab-content");
+        for (let i = 0; i < tabContents.length; i++) {
+            tabContents[i].classList.remove("active");
+        }
+        const tabButtons = document.getElementsByClassName("tab-button");
+        for (let i = 0; i < tabButtons.length; i++) {
+            tabButtons[i].classList.remove("active");
+        }
+        document.getElementById(tabName).classList.add("active");
+        evt.currentTarget.classList.add("active");
+    }
+
+    // Hàm tính toán và cập nhật số tiền
+    function calculateAllocation(e) {
+        e.preventDefault();
+        const amount = parseFloat(document.getElementById('amountInput').value) || 0;
+        
+        // Lưu vào localStorage
+        localStorage.setItem('totalAmount', amount);
+        localStorage.setItem('savedDate', document.getElementById('dateInput').value);
+
+        updateValues(amount);
+        alert('Đã cập nhật và lưu phân bổ tài chính thành công!');
+    }
+
+    function updateValues(amount) {
+        const formatMoney = (val) => new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(val);
+
+        document.getElementById('val-55').innerText = formatMoney(amount * 0.55);
+        document.getElementById('val-10-1').innerText = formatMoney(amount * 0.10);
+        document.getElementById('val-10-2').innerText = formatMoney(amount * 0.10);
+        document.getElementById('val-10-3').innerText = formatMoney(amount * 0.10);
+        document.getElementById('val-10-4').innerText = formatMoney(amount * 0.10);
+        document.getElementById('val-5').innerText = formatMoney(amount * 0.05);
+    }
+</script>
+
+</body>
+</html>
