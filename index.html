@@ -17,7 +17,7 @@
             color: #333;
         }
         .container {
-            max-width: 800px;
+            max-width: 850px;
             margin: 0 auto;
             background: #fff;
             border-radius: 12px;
@@ -30,7 +30,6 @@
             padding: 20px;
             text-align: center;
         }
-        /* Navigation Tabs */
         .tabs {
             display: flex;
             flex-wrap: wrap;
@@ -44,7 +43,7 @@
             border: none;
             background: inherit;
             cursor: pointer;
-            font-size: 14px;
+            font-size: 13px;
             font-weight: 600;
             color: #7f8c8d;
             transition: all 0.3s ease;
@@ -59,7 +58,6 @@
             color: #2980b9;
             border-bottom: 3px solid #2980b9;
         }
-        /* Tab Content */
         .tab-content {
             display: none;
             padding: 25px;
@@ -67,7 +65,6 @@
         .tab-content.active {
             display: block;
         }
-        /* Form Inputs */
         .form-group {
             margin-bottom: 15px;
         }
@@ -76,12 +73,12 @@
             margin-bottom: 6px;
             font-weight: 600;
         }
-        input {
+        input, select {
             width: 100%;
             padding: 10px;
             border: 1px solid #ccc;
             border-radius: 6px;
-            font-size: 16px;
+            font-size: 15px;
         }
         button.btn-submit {
             background: #27ae60;
@@ -93,28 +90,96 @@
             font-size: 16px;
             width: 100%;
             margin-top: 10px;
+            font-weight: 600;
         }
         button.btn-submit:hover {
             background: #219150;
         }
-        /* Cards in Category Tabs */
         .card {
             background: #f8f9fa;
             border-left: 5px solid #2980b9;
             padding: 15px;
             border-radius: 6px;
-            margin-bottom: 15px;
+            margin-bottom: 20px;
         }
-        .amount-display {
-            font-size: 24px;
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-top: 10px;
+        }
+        .stat-item {
+            background: #fff;
+            padding: 10px;
+            border-radius: 6px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        .stat-label {
+            font-size: 12px;
+            color: #7f8c8d;
+            text-transform: uppercase;
+        }
+        .stat-value {
+            font-size: 18px;
             font-weight: bold;
-            color: #27ae60;
-            margin-top: 5px;
+            margin-top: 4px;
         }
+        .val-total { color: #2980b9; }
+        .val-spent { color: #c0392b; }
+        .val-remain { color: #27ae60; }
         .desc {
             color: #666;
-            margin-top: 8px;
-            line-height: 1.5;
+            margin-top: 10px;
+            font-size: 14px;
+            line-height: 1.4;
+        }
+        /* Style cho danh sách chi tiêu */
+        .expense-form {
+            background: #eef2f5;
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+        }
+        .expense-form h4 {
+            margin-bottom: 10px;
+            color: #34495e;
+        }
+        .history-title {
+            margin-bottom: 10px;
+            color: #2c3e50;
+            font-size: 16px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 5px;
+        }
+        th, td {
+            text-align: left;
+            padding: 8px 12px;
+            border-bottom: 1px solid #ddd;
+            font-size: 14px;
+        }
+        th {
+            background-color: #eaeded;
+            color: #333;
+        }
+        .btn-delete {
+            background: #e74c3c;
+            color: white;
+            border: none;
+            padding: 4px 8px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+        .btn-delete:hover {
+            background: #c0392b;
+        }
+        .empty-history {
+            color: #95a5a6;
+            font-style: italic;
+            font-size: 13px;
         }
     </style>
 </head>
@@ -127,7 +192,7 @@
 
     <!-- Thanh chuyển Tab -->
     <div class="tabs">
-        <button class="tab-button active" onclick="openTab(event, 'tab1')">Nhập Số Tiền</button>
+        <button class="tab-button active" onclick="openTab(event, 'tab1')">Thu Nhập</button>
         <button class="tab-button" onclick="openTab(event, 'tab2')">Thiết Yếu (55%)</button>
         <button class="tab-button" onclick="openTab(event, 'tab3')">Tiết Kiệm (10%)</button>
         <button class="tab-button" onclick="openTab(event, 'tab4')">Giáo Dục (10%)</button>
@@ -152,82 +217,47 @@
         </form>
     </div>
 
-    <!-- Tab 2: Nhu cầu thiết yếu -->
-    <div id="tab2" class="tab-content">
-        <h3>Quỹ Nhu Cầu Thiết Yếu (55%)</h3>
-        <div class="card">
-            <div>Số tiền khả dụng:</div>
-            <div class="amount-display" id="val-55">0 VNĐ</div>
-            <div class="desc">Dùng cho ăn uống, sinh hoạt, tiền nhà, hóa đơn điện nước, đi lại...</div>
-        </div>
-    </div>
-
-    <!-- Tab 3: Tiết kiệm dài hạn -->
-    <div id="tab3" class="tab-content">
-        <h3>Quỹ Tiết Kiệm Dài Hạn (10%)</h3>
-        <div class="card">
-            <div>Số tiền khả dụng:</div>
-            <div class="amount-display" id="val-10-1">0 VNĐ</div>
-            <div class="desc">Dùng cho mục tiêu dài hạn (mua xe, mua nhà, quỹ dự phòng khẩn cấp...).</div>
-        </div>
-    </div>
-
-    <!-- Tab 4: Giáo dục -->
-    <div id="tab4" class="tab-content">
-        <h3>Quỹ Phát Triển Bản Thân (10%)</h3>
-        <div class="card">
-            <div>Số tiền khả dụng:</div>
-            <div class="amount-display" id="val-10-2">0 VNĐ</div>
-            <div class="desc">Dùng để mua sách, học thêm khóa học, nâng cao kỹ năng bản thân.</div>
-        </div>
-    </div>
-
-    <!-- Tab 5: Hưởng thụ -->
-    <div id="tab5" class="tab-content">
-        <h3>Quỹ Hưởng Thụ (10%)</h3>
-        <div class="card">
-            <div>Số tiền khả dụng:</div>
-            <div class="amount-display" id="val-10-3">0 VNĐ</div>
-            <div class="desc">Dùng để cà phê, du lịch, mua sắm sở thích cá nhân, thư giãn.</div>
-        </div>
-    </div>
-
-    <!-- Tab 6: Tự do tài chính -->
-    <div id="tab6" class="tab-content">
-        <h3>Quỹ Tự Do Tài Chính (10%)</h3>
-        <div class="card">
-            <div>Số tiền khả dụng:</div>
-            <div class="amount-display" id="val-10-4">0 VNĐ</div>
-            <div class="desc">Dùng để đầu tư, gửi tiết kiệm, mua vàng... "Con gà đẻ trứng vàng - Không được giết!".</div>
-        </div>
-    </div>
-
-    <!-- Tab 7: Cho đi / Từ thiện -->
-    <div id="tab7" class="tab-content">
-        <h3>Quỹ Cho Đi / Từ Thiện (5%)</h3>
-        <div class="card">
-            <div>Số tiền khả dụng:</div>
-            <div class="amount-display" id="val-5">0 VNĐ</div>
-            <div class="desc">Dùng làm từ thiện, báo hiếu cha mẹ, giúp đỡ bạn bè, người thân.</div>
-        </div>
-    </div>
+    <!-- Mẫu khung hiển thị hũ -->
+    <div id="tab2" class="tab-content"></div>
+    <div id="tab3" class="tab-content"></div>
+    <div id="tab4" class="tab-content"></div>
+    <div id="tab5" class="tab-content"></div>
+    <div id="tab6" class="tab-content"></div>
+    <div id="tab7" class="tab-content"></div>
 </div>
 
 <script>
-    // Tự động gán ngày hiện tại vào ô input date khi tải trang
+    // Định nghĩa cấu hình 6 hũ
+    const jarsConfig = {
+        'tab2': { name: 'Quỹ Nhu Cầu Thiết Yếu (55%)', rate: 0.55, desc: 'Dùng cho ăn uống, sinh hoạt, tiền nhà, hóa đơn điện nước, đi lại...' },
+        'tab3': { name: 'Quỹ Tiết Kiệm Dài Hạn (10%)', rate: 0.10, desc: 'Dùng cho mục tiêu dài hạn (mua xe, mua nhà, quỹ dự phòng khẩn cấp...).' },
+        'tab4': { name: 'Quỹ Phát Triển Bản Thân (10%)', rate: 0.10, desc: 'Dùng để mua sách, học thêm khóa học, nâng cao kỹ năng bản thân.' },
+        'tab5': { name: 'Quỹ Hưởng Thụ (10%)', rate: 0.10, desc: 'Dùng để cà phê, du lịch, mua sắm sở thích cá nhân, thư giãn.' },
+        'tab6': { name: 'Quỹ Tự Do Tài Chính (10%)', rate: 0.10, desc: 'Dùng để đầu tư, gửi tiết kiệm, mua vàng...' },
+        'tab7': { name: 'Quỹ Cho Đi / Từ Thiện (5%)', rate: 0.05, desc: 'Dùng làm từ thiện, báo hiếu cha mẹ, giúp đỡ bạn bè, người thân.' }
+    };
+
+    let totalAmount = 0;
+    let expenses = JSON.parse(localStorage.getItem('jarExpenses')) || {};
+
     document.addEventListener('DOMContentLoaded', () => {
         const today = new Date().toISOString().split('T')[0];
         document.getElementById('dateInput').value = today;
 
-        // Tải dữ liệu cũ nếu đã lưu
+        // Tải tổng thu nhập
         const savedAmount = localStorage.getItem('totalAmount');
         if (savedAmount) {
-            document.getElementById('amountInput').value = savedAmount;
-            updateValues(parseFloat(savedAmount));
+            totalAmount = parseFloat(savedAmount);
+            document.getElementById('amountInput').value = totalAmount;
         }
+
+        renderAllJars();
     });
 
-    // Chức năng chuyển Tab
+    function formatMoney(val) {
+        return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(val);
+    }
+
     function openTab(evt, tabName) {
         const tabContents = document.getElementsByClassName("tab-content");
         for (let i = 0; i < tabContents.length; i++) {
@@ -241,28 +271,128 @@
         evt.currentTarget.classList.add("active");
     }
 
-    // Hàm tính toán và cập nhật số tiền
     function calculateAllocation(e) {
         e.preventDefault();
-        const amount = parseFloat(document.getElementById('amountInput').value) || 0;
+        totalAmount = parseFloat(document.getElementById('amountInput').value) || 0;
         
-        // Lưu vào localStorage
-        localStorage.setItem('totalAmount', amount);
+        localStorage.setItem('totalAmount', totalAmount);
         localStorage.setItem('savedDate', document.getElementById('dateInput').value);
 
-        updateValues(amount);
-        alert('Đã cập nhật và lưu phân bổ tài chính thành công!');
+        renderAllJars();
+        alert('Đã cập nhật và phân bổ thu nhập!');
     }
 
-    function updateValues(amount) {
-        const formatMoney = (val) => new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(val);
+    // Tạo giao diện cho 6 Tab hũ
+    function renderAllJars() {
+        for (let tabId in jarsConfig) {
+            renderJarTab(tabId);
+        }
+    }
 
-        document.getElementById('val-55').innerText = formatMoney(amount * 0.55);
-        document.getElementById('val-10-1').innerText = formatMoney(amount * 0.10);
-        document.getElementById('val-10-2').innerText = formatMoney(amount * 0.10);
-        document.getElementById('val-10-3').innerText = formatMoney(amount * 0.10);
-        document.getElementById('val-10-4').innerText = formatMoney(amount * 0.10);
-        document.getElementById('val-5').innerText = formatMoney(amount * 0.05);
+    function renderJarTab(tabId) {
+        const container = document.getElementById(tabId);
+        const jar = jarsConfig[tabId];
+        const jarBudget = totalAmount * jar.rate;
+        
+        const jarList = expenses[tabId] || [];
+        const totalSpent = jarList.reduce((sum, item) => sum + item.amount, 0);
+        const remaining = jarBudget - totalSpent;
+
+        let historyRows = jarList.map((item, index) => `
+            <tr>
+                <td>${item.date}</td>
+                <td>${item.note}</td>
+                <td style="color: #c0392b; font-weight: 600;">-${formatMoney(item.amount)}</td>
+                <td><button class="btn-delete" onclick="deleteExpense('${tabId}', ${index})">Xóa</button></td>
+            </tr>
+        `).join('');
+
+        let historyTable = jarList.length > 0 ? `
+            <table>
+                <thead>
+                    <tr>
+                        <th>Ngày</th>
+                        <th>Nội dung</th>
+                        <th>Số tiền</th>
+                        <th>Thao tác</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${historyRows}
+                </tbody>
+            </table>
+        ` : `<p class="empty-history">Chưa có khoản chi nào trong hũ này.</p>`;
+
+        container.innerHTML = `
+            <h3>${jar.name}</h3>
+            
+            <div class="card">
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <div class="stat-label">Được Hạn Mức</div>
+                        <div class="stat-value val-total">${formatMoney(jarBudget)}</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-label">Đã Chi Tiêu</div>
+                        <div class="stat-value val-spent">${formatMoney(totalSpent)}</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-label">Còn Lại</div>
+                        <div class="stat-value val-remain">${formatMoney(remaining)}</div>
+                    </div>
+                </div>
+                <div class="desc">${jar.desc}</div>
+            </div>
+
+            <div class="expense-form">
+                <h4>+ Ghi Nhận Chi Tiêu Hũ</h4>
+                <div style="display: grid; grid-template-columns: 2fr 1.5fr 1fr; gap: 10px; margin-top: 10px;">
+                    <input type="text" id="desc-${tabId}" placeholder="Tên khoản chi (ví dụ: Tiền điện, Mua sách...)">
+                    <input type="number" id="amount-${tabId}" placeholder="Số tiền (VNĐ)" min="0">
+                    <button class="btn-submit" style="margin: 0;" onclick="addExpense('${tabId}')">Thêm Chi Tiêu</button>
+                </div>
+            </div>
+
+            <div>
+                <h4 class="history-title">Lịch Sử Chi Tiêu</h4>
+                ${historyTable}
+            </div>
+        `;
+    }
+
+    function addExpense(tabId) {
+        const descInput = document.getElementById(`desc-${tabId}`);
+        const amountInput = document.getElementById(`amount-${tabId}`);
+        
+        const note = descInput.value.trim();
+        const amount = parseFloat(amountInput.value);
+
+        if (!note || isNaN(amount) || amount <= 0) {
+            alert('Vui lòng nhập tên khoản chi và số tiền hợp lệ!');
+            return;
+        }
+
+        if (!expenses[tabId]) {
+            expenses[tabId] = [];
+        }
+
+        const today = new Date().toLocaleDateString('vi-VN');
+        expenses[tabId].unshift({
+            date: today,
+            note: note,
+            amount: amount
+        });
+
+        localStorage.setItem('jarExpenses', JSON.stringify(expenses));
+        renderJarTab(tabId);
+    }
+
+    function deleteExpense(tabId, index) {
+        if (confirm('Bạn có chắc muốn xóa khoản chi này?')) {
+            expenses[tabId].splice(index, 1);
+            localStorage.setItem('jarExpenses', JSON.stringify(expenses));
+            renderJarTab(tabId);
+        }
     }
 </script>
 
