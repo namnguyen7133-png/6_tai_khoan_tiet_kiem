@@ -398,3 +398,24 @@
 
 </body>
 </html>
+// Hàm tự động tải dữ liệu từ tệp dulieu.txt trên GitHub khi mở trang web
+function taiDuLieuTuGitHub() {
+    // Thay thế đường dẫn bên dưới bằng "Raw URL" tệp dulieu.txt trên GitHub của bạn
+    const urlRawGitHub = "https://raw.githubusercontent.com/TEN_TAI_KHOAN/TEN_REPO/main/dulieu.txt";
+    
+    fetch(urlRawGitHub + "?t=" + new Date().getTime()) // Thêm tham số thời gian để tránh bị lưu cache cũ
+        .then(response => response.text())
+        .then(data => {
+            if (data.trim() !== "") {
+                // Đưa dữ liệu đọc được vào khung nhập liệu hoặc biến trong trang web của bạn
+                console.log("Đã tải dữ liệu thành công từ GitHub:", data);
+                // Ví dụ: document.getElementById("noi_dung").value = data;
+            }
+        })
+        .catch(error => console.error("Lỗi khi tải dữ liệu:", error));
+}
+
+// Gọi hàm này khi trang vừa được tải xong
+window.onload = function() {
+    taiDuLieuTuGitHub();
+};
