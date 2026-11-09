@@ -401,7 +401,7 @@
 // Hàm tự động tải dữ liệu từ tệp dulieu.txt trên GitHub khi mở trang web
 function taiDuLieuTuGitHub() {
     // Thay thế đường dẫn bên dưới bằng "Raw URL" tệp dulieu.txt trên GitHub của bạn
-    const urlRawGitHub = "https://raw.githubusercontent.com/TEN_TAI_KHOAN/TEN_REPO/main/dulieu.txt";
+    const urlRawGitHub = "https://raw.githubusercontent.com/namnguyen7133-png/6_tai_khoan_tiet_kiem/refs/heads/main/du_lieu.txt";
     
     fetch(urlRawGitHub + "?t=" + new Date().getTime()) // Thêm tham số thời gian để tránh bị lưu cache cũ
         .then(response => response.text())
